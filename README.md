@@ -1,4 +1,4 @@
-# my-cli02
+# hm-news
 
 ## Project setup
 ```
