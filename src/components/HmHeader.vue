@@ -15,19 +15,20 @@ export default {}
 </script>
 
 <style lang="less" scoped>
-  .hm-header{
-    height: 40px;
-    line-height: 40px;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    padding: 0 10px;
-    text-align: center;
-    .left,.right{
-      width: 30px;
-    }
-    .center{
-      flex:1;
-      font-weight: 700;
-    }
+.hm-header {
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  padding: 0 10px;
+  text-align: center;
+  .left,
+  .right {
+    width: 30px;
   }
+  .center {
+    flex: 1;
+    font-weight: 700;
+  }
+}
 </style>
