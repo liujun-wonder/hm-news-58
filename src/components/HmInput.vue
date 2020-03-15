@@ -35,11 +35,16 @@ export default {
     inputFn(e) {
       let value = e.target.value
       this.$emit('input', value)
+      this.validate(value)
+    },
+    validate(value) {
       if (this.rule) {
         if (this.rule.test(value)) {
           this.status = 'success'
+          return true
         } else {
           this.status = 'error'
+          return false
         }
       }
     }

@@ -20,6 +20,11 @@ Vue.component('hm-input', HmInput)
 axios.defaults.baseURL = 'http://localhost:3000'
 Vue.prototype.$axios = axios
 
+import { Button, Field, Toast } from 'vant'
+Vue.use(Button)
+Vue.use(Field)
+Vue.use(Toast)
+
 Vue.config.productionTip = false
 
 new Vue({
