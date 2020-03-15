@@ -22,6 +22,11 @@
     ></hm-input>
 
     <hm-button @click="login">登录</hm-button>
+
+    <div class="go-register">
+      没有账号？去
+      <router-link class="link" to="/register">注册</router-link>
+    </div>
   </div>
 </template>
 
@@ -29,11 +34,10 @@
 export default {
   methods: {
     login() {
+      const result1 = this.$refs.username.validate(this.username)
+      const result2 = this.$refs.password.validate(this.password)
 
-      const result1=this.$refs.username.validate(this.username)
-      const result2=this.$refs.password.validate(this.password)
-
-      if(!result1||!result2){
+      if (!result1 || !result2) {
         return
       }
 
@@ -60,8 +64,21 @@ export default {
       username: '',
       password: ''
     }
+  },
+  created () {
+    this.username=this.$route.params.username
+    this.password=this.$route.params.password
   }
 }
 </script>
 
-<style></style>
+<style scoped lang="less">
+.go-register {
+  padding: 0 20px;
+  font-size: 18px;
+  text-align: right;
+  .link {
+    color: orange;
+  }
+}
+</style>
