@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <router-view></router-view>
+  <div class="edit">
+    <hm-header>编辑资料</hm-header>
   </div>
 </template>
 

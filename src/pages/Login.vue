@@ -50,8 +50,13 @@ export default {
         }
       }).then(res => {
         console.log(res.data)
+        const { statusCode, data, message } = res.data
         if (res.data.statusCode === 200) {
-          this.$toast.success('登录成功')
+          this.$toast.success(message)
+
+          localStorage.setItem('token', data.token)
+          localStorage.setItem('user_id', data.user.id)
+
           this.$router.push('./user')
         } else {
           this.$toast.fail('用户名或者密码错误')
@@ -65,9 +70,9 @@ export default {
       password: ''
     }
   },
-  created () {
-    this.username=this.$route.params.username
-    this.password=this.$route.params.password
+  created() {
+    this.username = this.$route.params.username
+    this.password = this.$route.params.password
   }
 }
 </script>
