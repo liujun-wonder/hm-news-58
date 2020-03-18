@@ -19,11 +19,26 @@ Vue.component('hm-button', HmButton)
 Vue.component('hm-input', HmInput)
 Vue.component('hm-navbar', HmNavBar)
 
-import { Button, Field, Toast, Dialog } from 'vant'
+import {
+  Button,
+  Field,
+  Toast,
+  Dialog,
+  Radio,
+  RadioGroup,
+  Cell,
+  CellGroup,
+  Uploader
+} from 'vant'
 Vue.use(Button)
 Vue.use(Field)
 Vue.use(Toast)
 Vue.use(Dialog)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Cell)
+Vue.use(CellGroup)
+Vue.use(Uploader)
 
 axios.defaults.baseURL = 'http://localhost:3000'
 
@@ -38,6 +53,12 @@ axios.interceptors.response.use(function(res) {
     Toast.fail(message)
   }
   return res
+})
+
+axios.interceptors.request.use(function(config) {
+  const token = localStorage.getItem('token')
+  config.headers.Authorization = token
+  return config
 })
 
 Vue.prototype.$axios = axios
