@@ -64,11 +64,29 @@
         </van-cell-group>
       </van-radio-group>
     </van-dialog>
+
+    <div class="cropper-mask" v-show="showCropper">
+      <vue-cropper
+        ref="cropper"
+        :img="img"
+        :autoCrop="true"
+        :autoCropWidth="150"
+        :autoCropHeight="150"
+        :fixed="true"
+      ></vue-cropper>
+
+      <van-button class="crop" type="primary" @click="crop">裁剪</van-button>
+      <van-button class="cancel" type="info" @click="cancel">取消</van-button>
+    </div>
   </div>
 </template>
 
 <script>
+import { VueCropper } from 'vue-cropper'
 export default {
+  components: {
+    VueCropper
+  },
   data() {
     return {
       info: {},
@@ -77,7 +95,9 @@ export default {
       show1: false,
       password: '',
       show2: false,
-      gender: 1
+      gender: 1,
+      showCropper: false,
+      img: ''
     }
   },
   created() {
@@ -147,20 +167,22 @@ export default {
     },
 
     afterRead(file) {
-      const fd = new FormData()
-      fd.append('file', file.file)
-      this.$axios({
-        method: 'post',
-        url: '/upload',
-        data: fd
-      }).then(res => {
-        const { statusCode, data } = res.data
-        if (statusCode === 200) {
-          this.editUser({
-            head_img: data.url
-          })
-        }
-      })
+      this.showCropper = true
+      this.img = file.content
+      // const fd = new FormData()
+      // fd.append('file', file.file)
+      // this.$axios({
+      //   method: 'post',
+      //   url: '/upload',
+      //   data: fd
+      // }).then(res => {
+      //   const { statusCode, data } = res.data
+      //   if (statusCode === 200) {
+      //     this.editUser({
+      //       head_img: data.url
+      //     })
+      //   }
+      // })
     },
 
     beforeRead(file) {
@@ -174,6 +196,32 @@ export default {
         return false
       }
       return true
+    },
+
+    cancel() {
+      this.showCropper = false
+      this.img = ''
+    },
+
+    crop() {
+      this.$refs.cropper.getCropBlob(data => {
+        const fd = new FormData()
+        fd.append('file', data)
+        this.$axios({
+          method: 'post',
+          url: '/upload',
+          data: fd
+        }).then(res => {
+          const { statusCode, data } = res.data
+          if (statusCode === 200) {
+            this.showCropper = false
+            this.img = ''
+            this.editUser({
+              head_img: data.url
+            })
+          }
+        })
+      })
     }
   },
 
@@ -213,5 +261,24 @@ export default {
 .van-field {
   border: 1px solid #ccc;
   margin: 10px 0;
+}
+.cropper-mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  .crop,
+  .cancel {
+    position: absolute;
+    top: 0;
+  }
+  .crop {
+    left: 0;
+  }
+  .cancel {
+    right: 0;
+  }
 }
 </style>
