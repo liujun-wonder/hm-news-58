@@ -64,8 +64,8 @@ axios.interceptors.request.use(function(config) {
 Vue.prototype.$axios = axios
 
 import moment from 'moment'
-Vue.filter('date', function(input) {
-  return moment(input).format('YYYY-MM-DD')
+Vue.filter('date', function(input, format = 'YYYY-MM-DD') {
+  return moment(input).format(format)
 })
 
 Vue.config.productionTip = false
