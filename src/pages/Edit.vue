@@ -104,33 +104,31 @@ export default {
     this.getInfo()
   },
   methods: {
-    getInfo() {
+    async getInfo() {
       const user_id = localStorage.getItem('user_id')
       const token = localStorage.getItem('token')
-      this.$axios({
+      const res = await this.$axios({
         method: 'get',
         url: `/user/${user_id}`
-      }).then(res => {
-        const { statusCode, data } = res.data
-        if (statusCode === 200) {
-          this.info = data
-        }
       })
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.info = data
+      }
     },
-    editUser(data) {
+    async editUser(data) {
       const user_id = localStorage.getItem('user_id')
       const token = localStorage.getItem('token')
-      this.$axios({
+      const res = await this.$axios({
         method: 'post',
         url: `/user_update/${user_id}`,
         data
-      }).then(res => {
-        const { statusCode, message } = res.data
-        if (statusCode === 200) {
-          this.getInfo()
-          this.$toast.success(message)
-        }
       })
+      const { statusCode, message } = res.data
+      if (statusCode === 200) {
+        this.getInfo()
+        this.$toast.success(message)
+      }
     },
 
     showNickname() {

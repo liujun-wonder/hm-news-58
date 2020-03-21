@@ -2,22 +2,34 @@
   <div class="my-comment">
     <hm-header>我的跟帖</hm-header>
     <div class="list">
-      <div class="item" v-for="item in list" :key="item.id">
-        <div class="time">
-          {{ item.create_date | date('YYYY-MM-DD HH:mm') }}
-        </div>
+      <van-list
+        @load="onLoad"
+        :immediate-check="false"
+        :offset="50"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+      >
+        <div class="item" v-for="item in list" :key="item.id">
+          <div class="time">
+            {{ item.create_date | date('YYYY-MM-DD HH:mm') }}
+          </div>
 
-        <div class="parent-comment" v-if="item.parent">
-          <div class="parent-name">回复: {{ item.parent.user.nickname }}</div>
-          <div class="parent-content">{{ item.parent.content }}</div>
-        </div>
+          <div class="parent-comment" v-if="item.parent">
+            <div class="parent-name">回复: {{ item.parent.user.nickname }}</div>
+            <div class="parent-content">{{ item.parent.content }}</div>
+          </div>
 
-        <div class="content">{{ item.content }}</div>
-        <div class="link" @click="$router.push(`/post-detail/${item.post.id}`)">
-          <div class="title one-txt-cut">原文：{{ item.post.title }}</div>
-          <span class="iconfont iconjiantou1"></span>
+          <div class="content">{{ item.content }}</div>
+          <div
+            class="link"
+            @click="$router.push(`/post-detail/${item.post.id}`)"
+          >
+            <div class="title one-txt-cut">原文：{{ item.post.title }}</div>
+            <span class="iconfont iconjiantou1"></span>
+          </div>
         </div>
-      </div>
+      </van-list>
     </div>
   </div>
 </template>
@@ -26,25 +38,43 @@
 export default {
   data() {
     return {
-      list: []
+      list: [],
+      loading: false,
+      finished: false,
+      pageIndex: 1,
+      pageSize: 10
     }
   },
   created() {
     this.getCommentList()
   },
   methods: {
-    getCommentList() {
-      this.$axios({
+    async getCommentList() {
+      const res = await this.$axios({
         method: 'get',
-        url: '/user_comments'
-      }).then(res => {
-        // console.log(res.data)
-        const { statusCode, data } = res.data
-        if (statusCode === 200) {
-          this.list = data
-          console.log(this.list)
+        url: '/user_comments',
+        params: {
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
         }
       })
+      // console.log(res.data)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.list = [...this.list, ...data]
+        console.log(this.list)
+        this.loading = false
+        if (data.length < this.pageSize) {
+          this.finished = true
+        }
+      }
+    },
+    onLoad() {
+      console.log('触底了')
+      setTimeout(() => {
+        this.pageIndex++
+        this.getCommentList()
+      }, 1000)
     }
   }
 }

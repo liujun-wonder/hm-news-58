@@ -41,24 +41,23 @@ export default {
       info: {}
     }
   },
-  created() {
+  async created() {
     const user_id = localStorage.getItem('user_id')
     const token = localStorage.getItem('token')
 
-    this.$axios({
+    const res = await this.$axios({
       methos: 'get',
       url: `/user/${user_id}`,
       headers: {
         Authorization: token
       }
-    }).then(res => {
-      console.log(res)
-      const { statusCode, data } = res.data
-      if (statusCode === 200) {
-        this.info = data
-        console.log(this.info)
-      }
     })
+    // console.log(res)
+    const { statusCode, data } = res.data
+    if (statusCode === 200) {
+      this.info = data
+      console.log(this.info)
+    }
   },
   methods: {
     async logout() {

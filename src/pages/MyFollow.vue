@@ -28,18 +28,17 @@ export default {
     this.getFollowList()
   },
   methods: {
-    getFollowList() {
-      this.$axios({
+    async getFollowList() {
+      const res = await this.$axios({
         method: 'get',
         url: '/user_follows'
-      }).then(res => {
-        // console.log(res.data)
-        const { statusCode, data } = res.data
-        if (statusCode === 200) {
-          this.list = data
-          // console.log(this.list)
-        }
       })
+      // console.log(res.data)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.list = data
+        // console.log(this.list)
+      }
     },
     async unfollow(id) {
       try {

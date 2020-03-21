@@ -49,7 +49,7 @@ export default {
     }
   },
   methods: {
-    register() {
+    async register() {
       let status1 = this.$refs.username.validate(this.username)
       let status2 = this.$refs.nickname.validate(this.nickname)
       let status3 = this.$refs.password.validate(this.password)
@@ -57,7 +57,7 @@ export default {
         return
       }
 
-      this.$axios({
+      const res = await this.$axios({
         method: 'post',
         url: '/register',
         data: {
@@ -65,17 +65,16 @@ export default {
           password: this.password,
           nickname: this.nickname
         }
-      }).then(res => {
-        if (res.data.statusCode === 200) {
-          this.$toast.success(res.data.message)
-          this.$router.push({
-            name: 'login',
-            params: { username: this.username, password: this.password }
-          })
-        } else {
-          this.$toast.fail(res.data.message)
-        }
       })
+      if (res.data.statusCode === 200) {
+        this.$toast.success(res.data.message)
+        this.$router.push({
+          name: 'login',
+          params: { username: this.username, password: this.password }
+        })
+      } else {
+        this.$toast.fail(res.data.message)
+      }
     }
   }
 }

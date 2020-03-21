@@ -28,7 +28,8 @@ import {
   RadioGroup,
   Cell,
   CellGroup,
-  Uploader
+  Uploader,
+  List
 } from 'vant'
 Vue.use(Button)
 Vue.use(Field)
@@ -39,6 +40,7 @@ Vue.use(RadioGroup)
 Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
+Vue.use(List)
 
 axios.defaults.baseURL = 'http://localhost:3000'
 
