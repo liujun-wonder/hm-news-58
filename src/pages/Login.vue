@@ -33,7 +33,7 @@
 <script>
 export default {
   methods: {
-    login() {
+    async login() {
       const result1 = this.$refs.username.validate(this.username)
       const result2 = this.$refs.password.validate(this.password)
 
@@ -41,27 +41,26 @@ export default {
         return
       }
 
-      this.$axios({
+      const res = await this.$axios({
         method: 'post',
         url: '/login',
         data: {
           username: this.username,
           password: this.password
         }
-      }).then(res => {
-        console.log(res.data)
-        const { statusCode, data, message } = res.data
-        if (res.data.statusCode === 200) {
-          this.$toast.success(message)
-
-          localStorage.setItem('token', data.token)
-          localStorage.setItem('user_id', data.user.id)
-
-          this.$router.push('./user')
-        } else {
-          this.$toast.fail('用户名或者密码错误')
-        }
       })
+      // console.log(res.data)
+      const { statusCode, data, message } = res.data
+      if (res.data.statusCode === 200) {
+        this.$toast.success(message)
+
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('user_id', data.user.id)
+
+        this.$router.push('./user')
+      } else {
+        this.$toast.fail('用户名或者密码错误')
+      }
     }
   },
   data() {

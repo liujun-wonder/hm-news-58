@@ -61,21 +61,19 @@ export default {
     })
   },
   methods: {
-    logout() {
-      this.$dialog
-        .confirm({
+    async logout() {
+      try {
+        const res = await this.$dialog.confirm({
           title: '温馨提示',
           message: '你确定要退出本系统吗'
         })
-        .then(() => {
-          localStorage.removeItem('token')
-          localStorage.removeItem('user_id')
-          this.$router.push('/login')
-          this.$toast.success('退出成功')
-        })
-        .catch(() => {
-          this.$toast('取消退出')
-        })
+        localStorage.removeItem('token')
+        localStorage.removeItem('user_id')
+        this.$router.push('/login')
+        this.$toast.success('退出成功')
+      } catch {
+        this.$toast('取消退出')
+      }
     }
   }
 }

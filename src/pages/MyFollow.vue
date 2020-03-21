@@ -41,28 +41,25 @@ export default {
         }
       })
     },
-    unfollow(id) {
-      this.$dialog
-        .confirm({
+    async unfollow(id) {
+      try {
+        await this.$dialog.confirm({
           title: '温馨提示',
           message: '你确定要取关改用户吗？'
         })
-        .then(() => {
-          this.$axios({
-            methos: 'get',
-            url: `/user_unfollow/${id}`
-          }).then(res => {
-            console.log(res.data)
-            const { statusCode, message } = res.data
-            if (statusCode === 200) {
-              this.$toast.success(message)
-              this.getFollowList()
-            }
-          })
+        const res = await this.$axios({
+          methos: 'get',
+          url: `/user_unfollow/${id}`
         })
-        .catch(() => {
-          this.$toast('操作取消')
-        })
+        // console.log(res.data)
+        const { statusCode, message } = res.data
+        if (statusCode === 200) {
+          this.$toast.success(message)
+          this.getFollowList()
+        }
+      } catch {
+        this.$toast('操作取消')
+      }
     }
   }
 }
