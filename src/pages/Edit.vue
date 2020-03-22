@@ -202,23 +202,22 @@ export default {
     },
 
     crop() {
-      this.$refs.cropper.getCropBlob(data => {
+      this.$refs.cropper.getCropBlob(async data => {
         const fd = new FormData()
         fd.append('file', data)
-        this.$axios({
+        const res = await this.$axios({
           method: 'post',
           url: '/upload',
           data: fd
-        }).then(res => {
-          const { statusCode, data } = res.data
-          if (statusCode === 200) {
-            this.showCropper = false
-            this.img = ''
-            this.editUser({
-              head_img: data.url
-            })
-          }
         })
+        const { statusCode, data: data1 } = res.data
+        if (statusCode === 200) {
+          this.showCropper = false
+          this.img = ''
+          this.editUser({
+            head_img: data1.url
+          })
+        }
       })
     }
   },

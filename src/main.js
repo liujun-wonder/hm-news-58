@@ -29,7 +29,9 @@ import {
   Cell,
   CellGroup,
   Uploader,
-  List
+  List,
+  Tab,
+  Tabs
 } from 'vant'
 Vue.use(Button)
 Vue.use(Field)
@@ -41,11 +43,13 @@ Vue.use(Cell)
 Vue.use(CellGroup)
 Vue.use(Uploader)
 Vue.use(List)
+Vue.use(Tab)
+Vue.use(Tabs)
 
 axios.defaults.baseURL = 'http://localhost:3000'
 
 axios.interceptors.response.use(function(res) {
-  console.log('拦截到了res', res)
+  // console.log('拦截到了res', res)
   const { statusCode, message } = res.data
   if (statusCode === 401 && message === '用户信息验证失败') {
     router.push('/login')
@@ -59,7 +63,9 @@ axios.interceptors.response.use(function(res) {
 
 axios.interceptors.request.use(function(config) {
   const token = localStorage.getItem('token')
-  config.headers.Authorization = token
+  if (token) {
+    config.headers.Authorization = token
+  }
   return config
 })
 
