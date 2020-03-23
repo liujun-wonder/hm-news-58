@@ -14,22 +14,21 @@
     </div>
 
     <van-tabs v-model="active" sticky animated swipeable>
-      <van-tab :title="item.name" v-for="item in tabList" :key="item.id">
-        <!-- <p v-for="item in 20" :key="item">内容1</p> -->
-        <div class="my-star">
-          <div class="list">
-            <div class="item" v-for="item in postList" :key="item.id">
-              <div class="info">
-                <div class="title">{{ item.title }}</div>
-                <div class="bottom">
-                  <span>{{ item.user.nickname }}</span>
-                  <span>{{ item.comment_length }} 跟帖</span>
-                </div>
-              </div>
-              <img :src="item.cover[0].url" alt="" />
-            </div>
-          </div>
-        </div>
+      <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.id">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          :immediate-check="false"
+          :offset="50"
+        >
+          <hm-post
+            v-for="post in postList"
+            :key="post.id"
+            :post="post"
+          ></hm-post>
+        </van-list>
       </van-tab>
     </van-tabs>
   </div>
@@ -39,42 +38,69 @@
 export default {
   data() {
     return {
-      active: 2,
+      active: 0,
       tabList: [],
-      postList: []
+      postList: [],
+      pageIndex: 1,
+      pageSize: 5,
+      loading: false,
+      finished: false
     }
   },
-  created() {
-    this.getTabList()
+  async created() {
+    const res = await this.$axios.get('/category')
+    const { statusCode, data } = res.data
+    if (statusCode === 200) {
+      this.tabList = data
+      this.getPostList(this.tabList[this.active].id)
+    }
   },
   methods: {
-    async getTabList() {
-      const res = await this.$axios.get('/category')
-      const { statusCode, data } = res.data
-      if (statusCode === 200) {
-        this.tabList = data
-        // console.log(this.tabList)
-        this.getPostList(this.tabList[this.active].id)
-      }
-    },
+    // async getTabList() {
+    //   const res = await this.$axios.get('/category')
+    //   const { statusCode, data } = res.data
+    //   if (statusCode === 200) {
+    //     this.tabList = data
+    //     // console.log(this.tabList)
+    //     this.getPostList(this.tabList[this.active].id)
+    //   }
+    // },
     async getPostList(id) {
       // console.log('我需要获取分类id为', id, '下面的文章数据')
       const res = await this.$axios.get('/post', {
         params: {
-          category: id
+          category: id,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
         }
       })
-
-      // console.log(res.data)
       const { statusCode, data } = res.data
-      this.postList = data
-      console.log(this.postList)
+      this.postList = [...this.postList, ...data]
+
+      this.loading = false
+      if (data.length < this.pageSize) {
+        this.finished = true
+      }
+    },
+
+    onLoad() {
+      const id = this.tabList[this.active].id
+      setTimeout(() => {
+        this.pageIndex++
+        this.getPostList(id)
+      }, 1000)
     }
   },
   watch: {
     active(value) {
-      const id = this.tabList[value].id
-      this.getPostList(id)
+      this.postList = []
+      this.pageIndex = 1
+      this.finished = false
+      this.loading = true
+      setTimeout(() => {
+        const id = this.tabList[value].id
+        this.getPostList(id)
+      }, 500)
     }
   }
 }
@@ -120,36 +146,5 @@ export default {
 // 深度作用选择器
 /deep/ .van-tabs__nav {
   background-color: #ddd;
-}
-
-.item {
-  display: flex;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  justify-content: space-between;
-  .info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    .title {
-      font-size: 16px;
-    }
-    .bottom {
-      font-size: 12px;
-      color: #999;
-      span {
-        margin-right: 10px;
-      }
-    }
-  }
-  img {
-    width: 121px;
-    height: 75px;
-    display: block;
-    // 可以让图片等比例的压缩 取值:cover  contain
-    // 类似于 background-size: cover contain
-    object-fit: cover;
-  }
 }
 </style>

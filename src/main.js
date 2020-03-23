@@ -12,12 +12,14 @@ import HmLogo from './components/HmLogo.vue'
 import HmButton from './components/HmButton.vue'
 import HmInput from './components/HmInput.vue'
 import HmNavBar from './components/HmNavBar.vue'
+import HmPost from './components/HmPost.vue'
 
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
 Vue.component('hm-button', HmButton)
 Vue.component('hm-input', HmInput)
 Vue.component('hm-navbar', HmNavBar)
+Vue.component('hm-post', HmPost)
 
 import {
   Button,
