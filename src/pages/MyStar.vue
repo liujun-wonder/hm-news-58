@@ -18,6 +18,9 @@ export default {
     const res = await this.$axios.get('/user_star')
     const { statusCode, data } = res.data
     if (statusCode === 200) {
+      data.forEach(aa => {
+        aa.comment_length = aa.comments.length
+      })
       this.list = data
       console.log(this.list)
     }
