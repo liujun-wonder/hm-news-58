@@ -74,6 +74,11 @@ export default {
           pageSize: this.pageSize
         }
       })
+
+      if (this.postList.length > 0 && this.pageIndex === 1) {
+        this.postList = []
+      }
+
       const { statusCode, data } = res.data
       this.postList = [...this.postList, ...data]
 

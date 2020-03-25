@@ -57,7 +57,11 @@ export default {
         localStorage.setItem('token', data.token)
         localStorage.setItem('user_id', data.user.id)
 
-        this.$router.push('./user')
+        if (this.$route.params.back) {
+          this.$router.back()
+        } else {
+          this.$router.push('./user')
+        }
       } else {
         this.$toast.fail('用户名或者密码错误')
       }

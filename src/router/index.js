@@ -10,6 +10,7 @@ import MyFollow from '../pages/MyFollow.vue'
 import MyComments from '../pages/MyComments.vue'
 import MyStar from '../pages/MyStar.vue'
 import Home from '../pages/Home.vue'
+import PostDetail from '../pages/PostDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -31,7 +32,8 @@ const router = new VueRouter({
     { path: '/test', component: Test, name: 'test' },
     { path: '/my-follow', component: MyFollow, name: 'my-follow' },
     { path: '/my-comments', component: MyComments, name: 'my-comments' },
-    { path: '/my-star', component: MyStar, name: 'my-star' }
+    { path: '/my-star', component: MyStar, name: 'my-star' },
+    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' }
   ]
 })
 
