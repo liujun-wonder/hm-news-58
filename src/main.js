@@ -13,6 +13,7 @@ import HmButton from './components/HmButton.vue'
 import HmInput from './components/HmInput.vue'
 import HmNavBar from './components/HmNavBar.vue'
 import HmPost from './components/HmPost.vue'
+import HmComment from './components/HmComment.vue'
 
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
@@ -20,6 +21,7 @@ Vue.component('hm-button', HmButton)
 Vue.component('hm-input', HmInput)
 Vue.component('hm-navbar', HmNavBar)
 Vue.component('hm-post', HmPost)
+Vue.component('hm-comment', HmComment)
 
 import {
   Button,
@@ -76,6 +78,19 @@ Vue.prototype.$axios = axios
 import moment from 'moment'
 Vue.filter('date', function(input, format = 'YYYY-MM-DD') {
   return moment(input).format(format)
+})
+
+Vue.filter('date2', function(input) {
+  const d = new Date(input)
+  const now = new Date()
+  const hour = ((now - d) / 1000 / 60 / 60) | 0
+  if (hour < 1) {
+    return '1小时内'
+  } else if (hour < 24) {
+    return hour + '小时前'
+  } else {
+    return moment(input).format('YYYY-MM-DD HH:mm:ss')
+  }
 })
 
 Vue.config.productionTip = false

@@ -1,5 +1,5 @@
 <template>
-  <div class="post-detail">
+  <div class="post-detail" :class="isShow ? 'pd140' : 'pd50'">
     <div class="header">
       <div class="left" @click="$router.back()">
         <span class="iconfont iconjiantou2"></span>
@@ -25,7 +25,14 @@
         <span>{{ detail.user.nickname }}</span>
         <span>{{ detail.create_date | date }}</span>
       </div>
-      <div class="content" v-html="detail.content"></div>
+
+      <div
+        v-if="detail.type === 1"
+        class="content"
+        v-html="detail.content"
+      ></div>
+      <video v-else :src="detail.content" controls autoplay muted></video>
+
       <div class="btns">
         <div
           class="btn like"
@@ -41,6 +48,17 @@
           <span>微信</span>
         </div>
       </div>
+    </div>
+
+    <!-- 跟帖列表 -->
+    <div class="comment-list">
+      <div class="title">精彩跟帖</div>
+      <hm-comment
+        v-for="item in commentList"
+        :key="item.id"
+        :comment="item"
+        @reply="reply"
+      ></hm-comment>
     </div>
 
     <div class="footer">
@@ -61,8 +79,9 @@
           placeholder="回复"
           @blur="handleBlur"
           ref="textarea"
+          v-model="content"
         ></textarea>
-        <div class="send">发送</div>
+        <div class="send" @click="addComment">发送</div>
       </div>
     </div>
   </div>
@@ -75,12 +94,16 @@ export default {
       detail: {
         user: {}
       },
-      isShow: false
+      isShow: false,
+      commentList: [],
+      replyId: '',
+      content: ''
     }
   },
 
   created() {
     this.getDetail()
+    this.getComments()
   },
 
   methods: {
@@ -90,7 +113,17 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.detail = data
-        console.log(this.detail)
+        // console.log(this.detail)
+      }
+    },
+
+    async getComments() {
+      const id = this.$route.params.id
+      const res = await this.$axios.get(`/post_comment/${id}`)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.commentList = data
+        console.log(this.commentList)
       }
     },
 
@@ -171,13 +204,48 @@ export default {
     },
 
     handleBlur() {
-      this.isShow = false
+      if (!this.content) {
+        this.isShow = false
+      }
+    },
+
+    async reply(id) {
+      this.replyId = id
+      this.isShow = true
+      await this.$nextTick()
+      this.$refs.textarea.focus()
+    },
+
+    async addComment() {
+      const res = await this.$axios({
+        method: 'post',
+        url: `/post_comment/${this.detail.id}`,
+        data: {
+          content: this.content,
+          parent_id: this.replyId
+        }
+      })
+      console.log(res)
+      const { statusCode } = res.data
+      if (statusCode === 200) {
+        this.$toast.success('评论发表成功')
+        this.content = ''
+        this.isShow = false
+        this.replyId = ''
+        this.getComments()
+      }
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.pd140 {
+  padding-bottom: 140px;
+}
+.pd50 {
+  padding-bottom: 50px;
+}
 .header {
   height: 50px;
   line-height: 50px;
@@ -233,6 +301,9 @@ export default {
   .content {
     font-size: 14px;
   }
+  video {
+    width: 100%;
+  }
 }
 .btns {
   display: flex;
@@ -253,6 +324,7 @@ export default {
     &.active {
       border-color: red;
       color: red;
+      display: block;
     }
   }
   .share {
@@ -261,7 +333,21 @@ export default {
   }
 }
 
+.comment-list {
+  border-top: 3px solid #ccc;
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    padding: 20px 0;
+  }
+}
 .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
   .input {
     height: 50px;
     display: flex;
@@ -301,6 +387,7 @@ export default {
     border-top: 1px solid #ccc;
     display: flex;
     height: 100px;
+    display: flex;
     align-items: flex-end;
     padding: 20px;
     textarea {
