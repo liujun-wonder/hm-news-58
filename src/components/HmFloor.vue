@@ -4,12 +4,15 @@
       :count="count - 1"
       v-if="comment.parent"
       :comment="comment.parent"
+      @reply="reply"
     ></hm-floor>
     <div class="hm-floor" :class="{ bt: !comment.parent }">
       <div class="header">
         <div class="left">{{ count }}楼 {{ comment.user.nickname }}</div>
         <div class="center">{{ comment.create_date | date2 }}</div>
-        <div class="right">回复</div>
+        <div class="right" @click="reply(comment.id, comment.user.nickname)">
+          回复
+        </div>
       </div>
       <div class="content">{{ comment.content }}</div>
     </div>
@@ -22,6 +25,11 @@ export default {
   props: {
     comment: Object,
     count: Number
+  },
+  methods: {
+    reply(id, nickname) {
+      this.$emit('reply', id, nickname)
+    }
   }
 }
 </script>

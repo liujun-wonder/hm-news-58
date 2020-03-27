@@ -76,7 +76,7 @@
       </div>
       <div class="textarea" v-else>
         <textarea
-          placeholder="回复"
+          :placeholder="`回复:${replyNickname}`"
           @blur="handleBlur"
           ref="textarea"
           v-model="content"
@@ -97,6 +97,7 @@ export default {
       isShow: false,
       commentList: [],
       replyId: '',
+      replyNickname: '',
       content: ''
     }
   },
@@ -206,17 +207,32 @@ export default {
     handleBlur() {
       if (!this.content) {
         this.isShow = false
+        this.replyId = ''
+        this.replyNickname = ''
       }
     },
 
-    async reply(id) {
+    async reply(id, nickname) {
       this.replyId = id
+      this.replyNickname = nickname
       this.isShow = true
       await this.$nextTick()
       this.$refs.textarea.focus()
     },
 
     async addComment() {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.push({
+          name: 'login',
+          params: {
+            back: true
+          }
+        })
+        this.$toast('请先登录')
+        return
+      }
+
       const res = await this.$axios({
         method: 'post',
         url: `/post_comment/${this.detail.id}`,
@@ -225,14 +241,16 @@ export default {
           parent_id: this.replyId
         }
       })
-      console.log(res)
-      const { statusCode } = res.data
+      // console.log(res)
+      const { statusCode, message } = res.data
       if (statusCode === 200) {
-        this.$toast.success('评论发表成功')
+        this.$toast.success(message)
         this.content = ''
         this.isShow = false
         this.replyId = ''
+        this.replyNickname = ''
         this.getComments()
+        this.getDetail()
       }
     }
   }
@@ -398,6 +416,7 @@ export default {
       padding: 10px;
       border: none;
       outline: none;
+      resize: none;
     }
     .send {
       height: 30px;

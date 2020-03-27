@@ -8,10 +8,13 @@
         <div class="name">{{ comment.user.nickname }}</div>
         <div class="time">{{ comment.create_date | date2 }}</div>
       </div>
-      <div class="right" @click="reply(comment.id)">回复</div>
+      <div class="right" @click="reply(comment.id, comment.user.nickname)">
+        回复
+      </div>
     </div>
 
     <hm-floor
+      @reply="reply"
       :count="getCount(0, comment)"
       v-if="comment.parent"
       :comment="comment.parent"
@@ -38,8 +41,8 @@ export default {
         return num
       }
     },
-    reply(id) {
-      this.$emit('reply', id)
+    reply(id, nickname) {
+      this.$emit('reply', id, nickname)
     }
   }
 }
