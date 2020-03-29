@@ -11,6 +11,8 @@ import MyComments from '../pages/MyComments.vue'
 import MyStar from '../pages/MyStar.vue'
 import Home from '../pages/Home.vue'
 import PostDetail from '../pages/PostDetail.vue'
+import TabEdit from '../pages/TabEdit.vue'
+import Search from '../pages/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -33,7 +35,9 @@ const router = new VueRouter({
     { path: '/my-follow', component: MyFollow, name: 'my-follow' },
     { path: '/my-comments', component: MyComments, name: 'my-comments' },
     { path: '/my-star', component: MyStar, name: 'my-star' },
-    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' }
+    { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' },
+    { path: '/tab-edit', component: TabEdit, name: 'tab-edit' },
+    { path: '/search', component: Search, name: 'search' }
   ]
 })
 

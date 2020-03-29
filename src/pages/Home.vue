@@ -4,7 +4,7 @@
       <div class="left">
         <span class="iconfont iconnew"></span>
       </div>
-      <div class="center">
+      <div class="center" @click="$router.push('/search')">
         <span class="iconfont iconsearch"></span>
         <span class="text">搜索新闻</span>
       </div>
@@ -36,6 +36,7 @@
 
 <script>
 export default {
+  name: 'home',
   data() {
     return {
       active: 2,
@@ -48,6 +49,13 @@ export default {
     }
   },
   async created() {
+    const activeTabs = JSON.parse(localStorage.getItem('activeTabs'))
+    if (activeTabs) {
+      this.tabList = activeTabs
+      this.getPostList(this.tabList[this.active].id)
+      return
+    }
+
     const res = await this.$axios.get('/category')
     const { statusCode, data } = res.data
     if (statusCode === 200) {

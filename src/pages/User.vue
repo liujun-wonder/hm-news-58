@@ -33,7 +33,9 @@
       content="文章/视频"
       @click="$router.push('/my-star')"
     ></hm-navbar>
+    <hm-navbar title="栏目管理" @click="$router.push('/tab-edit')"></hm-navbar>
     <hm-navbar title="设置" @click="$router.push('/edit')"></hm-navbar>
+    <hm-navbar title="首页" @click="$router.push('/')"></hm-navbar>
     <hm-navbar title="退出" @click="logout"></hm-navbar>
   </div>
 </template>
@@ -60,7 +62,7 @@ export default {
     const { statusCode, data } = res.data
     if (statusCode === 200) {
       this.info = data
-      console.log(this.info)
+      // console.log(this.info)
     }
   },
   methods: {
