@@ -132,24 +132,36 @@ export default {
       }
     },
 
-    clearHistory() {
+    async clearHistory() {
       //这里是数据的变化引起的页面变化
       const history = localStorage.getItem('history')
       if (!history) return
-      this.$dialog
-        .confirm({
+      // this.$dialog
+      //   .confirm({
+      //     title: '温馨提示',
+      //     message: '你确定要清空历史记录吗'
+      //   })
+      //   .then(() => {
+      //     localStorage.removeItem('history')
+      //     this.history = []
+      //     this.keyword = ''
+      //     this.$toast('清空成功')
+      //   })
+      //   .catch(() => {
+      //     this.$toast('取消清空')
+      //   })
+      try {
+        await this.$dialog.confirm({
           title: '温馨提示',
           message: '你确定要清空历史记录吗'
         })
-        .then(() => {
-          localStorage.removeItem('history')
-          this.history = []
-          this.keyword = ''
-          this.$toast('清空成功')
-        })
-        .catch(() => {
-          this.$toast('取消清空')
-        })
+        localStorage.removeItem('history')
+        this.history = []
+        this.keyword = ''
+        this.$toast('清空成功')
+      } catch {
+        this.$toast('取消清空')
+      }
     }
   },
 
