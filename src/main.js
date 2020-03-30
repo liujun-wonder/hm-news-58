@@ -35,7 +35,8 @@ import {
   Uploader,
   List,
   Tab,
-  Tabs
+  Tabs,
+  PullRefresh
 } from 'vant'
 Vue.use(Button)
 Vue.use(Field)
@@ -49,6 +50,7 @@ Vue.use(Uploader)
 Vue.use(List)
 Vue.use(Tab)
 Vue.use(Tabs)
+Vue.use(PullRefresh)
 
 axios.defaults.baseURL = 'http://localhost:3000'
 

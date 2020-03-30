@@ -26,7 +26,7 @@
     </div>
 
     <div class="multiple-img-post" v-else>
-      <div class="title"></div>
+      <div class="title">{{ post.title }}</div>
       <div class="imgs">
         <img :src="fixedUrl(post.cover[0].url)" alt="" />
         <img :src="fixedUrl(post.cover[0].url)" alt="" />

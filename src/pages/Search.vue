@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data() {
     return {
@@ -119,7 +120,9 @@ export default {
         this.$router.go(-1)
       }
     },
-    async recommend() {
+
+    recommend: _.debounce(async function() {
+      console.log('发送请求了')
       if (!this.keyword) return
       const res = await this.$axios.get('/post_search_recommend', {
         params: {
@@ -130,7 +133,7 @@ export default {
       if (statusCode === 200) {
         this.recommendList = data
       }
-    },
+    }, 500),
 
     async clearHistory() {
       //这里是数据的变化引起的页面变化

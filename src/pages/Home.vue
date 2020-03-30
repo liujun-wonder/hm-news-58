@@ -15,20 +15,22 @@
 
     <van-tabs v-model="active" sticky animated swipeable>
       <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.id">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-          :immediate-check="false"
-          :offset="50"
-        >
-          <hm-post
-            v-for="post in postList"
-            :key="post.id"
-            :post="post"
-          ></hm-post>
-        </van-list>
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            :immediate-check="false"
+            :offset="50"
+          >
+            <hm-post
+              v-for="post in postList"
+              :key="post.id"
+              :post="post"
+            ></hm-post>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -39,13 +41,14 @@ export default {
   name: 'home',
   data() {
     return {
-      active: 2,
+      active: 0,
       tabList: [],
       postList: [],
       pageIndex: 1,
       pageSize: 5,
       loading: false,
-      finished: false
+      finished: false,
+      refreshing: false
     }
   },
   async created() {
@@ -91,6 +94,7 @@ export default {
       this.postList = [...this.postList, ...data]
 
       this.loading = false
+      this.refreshing = false
       if (data.length < this.pageSize) {
         this.finished = true
       }
@@ -102,8 +106,22 @@ export default {
         this.pageIndex++
         this.getPostList(id)
       }, 1000)
+    },
+
+    onRefresh() {
+      console.log('123')
+      // 重新加载所有的数据
+      this.pageIndex = 1
+      this.postList = []
+      this.loading = true
+      this.finished = false
+      setTimeout(() => {
+        const id = this.tabList[this.active].id
+        this.getPostList(id)
+      }, 1000)
     }
   },
+
   watch: {
     active(value) {
       this.postList = []
@@ -113,7 +131,7 @@ export default {
       setTimeout(() => {
         const id = this.tabList[value].id
         this.getPostList(id)
-      }, 500)
+      }, 1000)
     }
   }
 }
