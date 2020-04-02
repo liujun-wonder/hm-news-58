@@ -29,8 +29,8 @@
       <div class="title">{{ post.title }}</div>
       <div class="imgs">
         <img :src="fixedUrl(post.cover[0].url)" alt="" />
-        <img :src="fixedUrl(post.cover[0].url)" alt="" />
-        <img :src="fixedUrl(post.cover[0].url)" alt="" />
+        <img :src="fixedUrl(post.cover[1].url)" alt="" />
+        <img :src="fixedUrl(post.cover[2].url)" alt="" />
       </div>
       <div class="bottom">
         <span>{{ post.user.nickname }}</span>
